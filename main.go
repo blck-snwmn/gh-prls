@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
+	"github.com/charmbracelet/glamour"
 	"github.com/cli/go-gh/v2/pkg/api"
 	graphql "github.com/cli/shurcooL-graphql"
 )
@@ -26,6 +28,7 @@ func main() {
 				PullRequest struct {
 					Title      string
 					Url        string
+					Number     int
 					Repository struct {
 						Name string
 						Url  string
@@ -41,13 +44,18 @@ func main() {
 	if err := client.Query("search", &query, variables); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(query.Search.IssueCount)
+	var builder strings.Builder
 	for _, node := range query.Search.Nodes {
-		fmt.Println(node.PullRequest.Title)
-		fmt.Println(node.PullRequest.Url)
-		fmt.Println(node.PullRequest.Repository.Name)
-		fmt.Println(node.PullRequest.Repository.Url)
+		identifier := fmt.Sprintf("%s#%d", node.PullRequest.Repository.Name, node.PullRequest.Number)
+		builder.WriteString(fmt.Sprintf("- %s: %s\n", identifier, node.PullRequest.Title))
+		builder.WriteString(fmt.Sprintf("    - %s \n", node.PullRequest.Url))
 	}
+	renderer, _ := glamour.NewTermRenderer(glamour.WithAutoStyle(), glamour.WithWordWrap(100))
+	out, err := renderer.Render(builder.String())
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(out)
 }
 
 func getUserName(ctx context.Context) (string, error) {
