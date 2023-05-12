@@ -2,14 +2,20 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
-	"strings"
+	"os"
 
-	"github.com/charmbracelet/glamour"
 	"github.com/cli/go-gh/v2/pkg/api"
 	graphql "github.com/cli/shurcooL-graphql"
 )
+
+type PR struct {
+	Identifier string `json:"identifier"`
+	Title      string `json:"title"`
+	URL        string `json:"url"`
+}
 
 func main() {
 	userName, err := getUserName(context.Background())
@@ -44,18 +50,18 @@ func main() {
 	if err := client.Query("search", &query, variables); err != nil {
 		log.Fatal(err)
 	}
-	var builder strings.Builder
+	prs := make([]PR, 0, len(query.Search.Nodes))
 	for _, node := range query.Search.Nodes {
 		identifier := fmt.Sprintf("%s#%d", node.PullRequest.Repository.Name, node.PullRequest.Number)
-		builder.WriteString(fmt.Sprintf("- %s: %s\n", identifier, node.PullRequest.Title))
-		builder.WriteString(fmt.Sprintf("    - %s \n", node.PullRequest.Url))
+		prs = append(prs, PR{
+			Identifier: identifier,
+			Title:      node.PullRequest.Title,
+			URL:        node.PullRequest.Repository.Url,
+		})
 	}
-	renderer, _ := glamour.NewTermRenderer(glamour.WithAutoStyle(), glamour.WithWordWrap(100))
-	out, err := renderer.Render(builder.String())
-	if err != nil {
+	if err := json.NewEncoder(os.Stdout).Encode(prs); err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(out)
 }
 
 func getUserName(ctx context.Context) (string, error) {
