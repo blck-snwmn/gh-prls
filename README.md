@@ -1,3 +1,5 @@
+ls pr
+
 ## Create
 ```bash
 $ gh extension create --precompiled=go gh-prls
