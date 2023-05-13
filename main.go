@@ -56,7 +56,7 @@ func main() {
 		prs = append(prs, PR{
 			Identifier: identifier,
 			Title:      node.PullRequest.Title,
-			URL:        node.PullRequest.Repository.Url,
+			URL:        node.PullRequest.Url,
 		})
 	}
 	if err := json.NewEncoder(os.Stdout).Encode(prs); err != nil {
