@@ -1,4 +1,4 @@
-ls pr
+A gh extension to list PRs
 
 ## Create
 ```bash
