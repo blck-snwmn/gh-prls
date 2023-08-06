@@ -1,3 +1,6 @@
+[![CodeQL](https://github.com/blck-snwmn/gh-prls/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/blck-snwmn/gh-prls/actions/workflows/github-code-scanning/codeql)
+[![release](https://github.com/blck-snwmn/gh-prls/actions/workflows/release.yml/badge.svg)](https://github.com/blck-snwmn/gh-prls/actions/workflows/release.yml)
+
 A gh extension to list PRs
 
 ## Create
