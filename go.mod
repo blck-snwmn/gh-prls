@@ -3,7 +3,7 @@ module github.com/blck-snwmn/gh-prls
 go 1.20
 
 require (
-	github.com/cli/go-gh/v2 v2.11.0
+	github.com/cli/go-gh/v2 v2.11.1
 	github.com/cli/shurcooL-graphql v0.0.4
 )
 
