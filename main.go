@@ -44,7 +44,7 @@ func main() {
 			IssueCount int
 		} `graphql:"search(first: 100, type: ISSUE, query: $query)"`
 	}
-	variables := map[string]interface{}{
+	variables := map[string]any{
 		"query": graphql.String(fmt.Sprintf("is:open is:pr archived:false user:%s", userName)),
 	}
 	if err := client.Query("search", &query, variables); err != nil {
